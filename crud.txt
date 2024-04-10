@@ -1,0 +1,22 @@
+package crud
+
+import (
+    "github.com/jinzhu/gorm"
+    "github.com/gin-gonic/gin"
+)
+
+type Customer struct {
+    ID        uint   `json:"id"`
+    FirstName string `json:"first_name"`
+    LastName  string `json:"last_name"`
+    Email     string `json:"email"`
+}
+
+func GetCustomers(db *gorm.DB) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        var customers []Customer
+        db.Find(&customers)
+
+        c.JSON(200, customers)
+    }
+}

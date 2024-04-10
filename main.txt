@@ -1,0 +1,35 @@
+go
+Copy code
+package main
+
+import (
+    "github.com/gin-gonic/gin"
+    "github.com/jinzhu/gorm"
+    _ "github.com/jinzhu/gorm/dialects/sqlite"
+    "projeto/crud"
+)
+
+var db *gorm.DB
+var err error
+
+func main() {
+    // Conectar ao banco de dados (SQLite neste exemplo)
+    db, err = gorm.Open("sqlite3", "test.db")
+    if err != nil {
+        panic("Erro ao conectar ao banco de dados")
+    }
+    defer db.Close()
+
+    // Criar tabela de clientes se não existir
+    db.AutoMigrate(&crud.Customer{})
+
+    // Criar uma instância do gin
+    r := gin.Default()
+
+    // Rotas
+    r.GET("/customers", crud.GetCustomers(db))
+    // Outras rotas podem ser definidas aqui...
+
+    // Executar servidor
+    r.Run(":8080")
+}
